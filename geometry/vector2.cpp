@@ -116,7 +116,6 @@ Vector2 &Vector2::normalize()
 float Vector2::component(const Vector2 &w) const
 {
     // Student to define - Module 1
-    //
     float wLength = w.norm();
     if (wLength > 1e-6f) 
         return dot(w) / wLength;
@@ -125,20 +124,34 @@ float Vector2::component(const Vector2 &w) const
 
 Vector2 Vector2::projection(const Vector2 &w) const
 {
-    // Student to define - Module 1
-    return Vector2();
+    float wLengthSq = w.norm_squared();
+    if (wLengthSq > 1e-12f) 
+    {
+        float scalar = dot(w) / wLengthSq;
+        return Vector2(w.x * scalar, w.y * scalar);
+    }
+    return Vector2(0.0f, 0.0f);
 }
 
 float Vector2::angle_between(const Vector2 &w) const
 {
-    // Student to define - Module 1
+    float thisLength = norm();
+    float wLength = w.norm();
+   
+    //again a geneours buffer to handle extremely small floating points such that they are basically 0
+    if (thisLength > 1e-6f && wLength > 1e-6f) 
+    {
+        float cosTheta = dot(w) / (thisLength * wLength);
+        // Clamp to handle floating point errors
+        cosTheta = std::max(-1.0f, std::min(1.0f, cosTheta));
+        return std::acos(cosTheta);
+    }
     return 0.0f;
 }
 
 Vector2 Vector2::reflect(const Vector2 &normal) const
 {
-    // Student to define - Module 1
-    return Vector2();
+    return *this - normal * (2.0f * dot(normal));
 }
 
 Vector2 operator*(float s, const Vector2 &v) { return Vector2(v.x * s, v.y * s); }
