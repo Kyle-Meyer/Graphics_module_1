@@ -306,7 +306,9 @@ void vector_test_module1()
     // Write an expression point and vector operations (not using affine_combination or mid_point)
     // to find the point (m34) that is 3/4 of the distance along a line between
     // m3 = (1.0f, 2.0f, 3.0f) and m2 = (5.0f, -5.0f, 0.0f)
-    Point3 m34;
+    Point3 m1(1.0f, 2.0f, 3.0f);
+    Point3 m2(5.0f, -5.0f, 0.0f);
+    Point3 m34 = m1 + 0.75f * (m2 - m1);
     logmsg("m34 = (%.2f %.2f %.2f)", m34.x, m34.y, m34.z);
 }
 

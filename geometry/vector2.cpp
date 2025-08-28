@@ -83,7 +83,7 @@ float Vector2::cross(const Vector2 &w) const
 
 Vector2 Vector2::get_perpendicular(bool clockwise) const
 {
-    return Vector2(-y, x);
+  return clockwise ? Vector2(y, -x) : Vector2(-y, x);
 }
 
 float Vector2::norm() const
