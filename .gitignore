@@ -10,6 +10,9 @@ obj/
 *.app
 *.dSYM/
 
+#ignore clangd cachec
+.cache/
+
 # Compiled object files
 *.o
 *.obj
