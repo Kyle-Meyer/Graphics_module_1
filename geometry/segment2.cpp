@@ -11,15 +11,6 @@ LineSegment2::LineSegment2(const Point2 &p1, const Point2 &p2) : a(p1), b(p2) {}
 
 Segment2PointDistanceResult LineSegment2::distance(const Point2 &p) const
 {
-  /* APPROACH: Distance to LINE SEGMENT (finite), not infinite line
-  * 
-  * 1. Project the query point onto the infinite line containing the segment
-  * 2. Check if this projection falls within the segment bounds [0,1]
-  * 3. If projection is outside bounds, clamp to nearest endpoint
-  * 4. This ensures we always find the closest point ON THE SEGMENT
-  * 
-  * For segment distance, we must clamp the projection parameter to [0,1], since this is not an infinite line.
-  */
     
   // Get the segment vector from a to b
   Vector2 segmentVector = b - a;
