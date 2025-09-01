@@ -64,41 +64,39 @@ Segment2PointDistanceResult LineSegment2::distance(const Point2 &p) const
 
 Segment2IntersectionResult LineSegment2::intersect(const LineSegment2 &segment) const
 {
-  // Direction vectors for both segments
-  Vector2 d1 = b - a;        // This segment's direction
-  Vector2 d2 = segment.b - segment.a;  // Other segment's direction
-  
-  // Vector from this segment's start to other segment's start
-  Vector2 startDiff = a - segment.a;
-  
-  // Use cross product to check for parallel lines
-  // Cross product in 2D: d1 × d2 = d1.x * d2.y - d1.y * d2.x
-  float cross_d1_d2 = d1.cross(d2);
-  
-  // Check if segments are parallel (cross product is zero)
-  if (fabs(cross_d1_d2) < 1e-6f) 
-  {
-      // Segments are parallel - return no intersection as specified
-      return {false, Point2()};
-  }
-  
-  // Calculate intersection parameters using cross products
-  // For line intersection: P1 + t1*d1 = P2 + t2*d2
-  // Solving: t1 = (startDiff × d2) / (d1 × d2)
-  //         t2 = (startDiff × d1) / (d1 × d2)
-  float t1 = startDiff.cross(d2) / cross_d1_d2;
-  float t2 = startDiff.cross(d1) / cross_d1_d2;
-  
-  // Check if intersection point lies within both segments [0,1]
-  if (t1 >= 0.0f && t1 <= 1.0f && t2 >= 0.0f && t2 <= 1.0f) 
-  {
-      // Calculate intersection point using vector addition
-      Point2 intersectionPoint = a + (d1 * t1);
-      return {true, intersectionPoint};
-  }
-  
-  // No intersection within segment bounds
-  return {false, Point2()};
+    Segment2IntersectionResult result;
+    result.intersects = false;
+    result.intersect_point = Point2(0.0f, 0.0f);
+    
+    // Get the direction vectors for both segments
+    Vector2 dir1 = b - a;  // Direction of current segment
+    Vector2 dir2 = segment.b - segment.a;  // Direction of other segment
+    
+    // Calculate the cross product of the direction vectors
+    float cross_product = dir1.x * dir2.y - dir1.y * dir2.x;
+    
+    // If cross product is zero (or very close to zero), lines are parallel
+    const float EPSILON = 1e-10f;
+    if (std::abs(cross_product) < EPSILON) {
+        return result;  // Parallel lines - no intersection
+    }
+    
+    // Calculate the vector from start of first segment to start of second segment
+    Vector2 start_diff = segment.a - a;
+    
+    // Calculate parametric values for intersection point
+    float t1 = (start_diff.x * dir2.y - start_diff.y * dir2.x) / cross_product;
+    float t2 = (start_diff.x * dir1.y - start_diff.y * dir1.x) / cross_product;
+    
+    // Check if intersection point lies within both line segments
+    if (t1 >= 0.0f && t1 <= 1.0f && t2 >= 0.0f && t2 <= 1.0f) {
+        result.intersects = true;
+        // Calculate intersection point using parametric equation
+        result.intersect_point.x = a.x + t1 * dir1.x;
+        result.intersect_point.y = a.y + t1 * dir1.y;
+    }
+    
+    return result;
 }
 
 Segment2ClipResult LineSegment2::clip_to_polygon(const std::vector<Point2> &poly) const
